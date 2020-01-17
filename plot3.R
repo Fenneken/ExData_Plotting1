@@ -11,12 +11,18 @@
 if (!file.exists("data")){
      dir.create("data")
 }
-fileUrl <- "https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2Fhousehold_power_consumption.zip"
-download.file(fileUrl, destfile = "./data/HouseholdPowerConsumption.zip",method="curl")
-unzip("./data/HouseholdPowerConsumption.zip",exdir="./data") #unzip the file
-setwd("./data") # move to the directory of the data
+###This code is for Checking whether data file exists. If not, it will unzip the file
+#setwd("./data") # move to the directory of the data
+
+if (!file.exists("./data/household_power_consumption.txt")) { 
+     fileUrl <- "https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2Fhousehold_power_consumption.zip"
+     download.file(fileUrl, destfile = "./data/HouseholdPowerConsumption.zip",method="curl")
+     unzip("HouseholdPowerConsumption.zip",exdir="./data") #unzip the file
+}
+
 # read the txt file
-household_power_consumption <- read.table("household_power_consumption.txt", sep=";", header = TRUE, na.strings="?")
+household_power_consumption <- read.table("./data/household_power_consumption.txt", sep=";", header = TRUE, na.strings="?")
+
 #filter only the rows of required dates
 library(dplyr)
 household_power_consumption <- filter(household_power_consumption, Date %in% c("1/2/2007","2/2/2007"))
@@ -37,5 +43,5 @@ with(household_power_consumption, {
 })
 legend("topright", col=c(1,"red","blue"), legend=c("Sub_metering_1","Sub_metering_2", "Sub_metering_3"),lty=1)
 #copy plot to png
-dev.copy(png,file="plot3.png")
+dev.copy(png,file="plot3.png",width = 480, height = 480)
 dev.off()
